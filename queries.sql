@@ -165,3 +165,20 @@ CALL MaximaVenta()
 /*
 SELECT GananciaVentas(2018,1)
 */
+/*
+SELECT UtilidadTotal('2018-01-01','2019-01-31')
+*/
+/*
+CALL CodigosABC('2018-01-01','2019-01-31')
+*/
+/*
+SELECT * FROM (SELECT @ParamProvId:=5 AS id) ProvId, productosproveedor
+*/
+/*
+START TRANSACTION
+####
+####
+ROLLBACK;
+####
+COMMIT; 
+*/
