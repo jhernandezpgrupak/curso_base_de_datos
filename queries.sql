@@ -182,3 +182,132 @@ ROLLBACK;
 ####
 COMMIT; 
 */
+/*
+INSERT INTO Productos 
+	(Prod_Descripcion, Prod_Propiedades) VALUES('Producto con JSON', 
+	'{"propiedades":
+		{
+			"electrico": true,
+			"garantia": true,
+			"nuevo":	false,
+			"fallas": true	
+		}
+	}');
+*/
+/*
+SELECT #Verificar la version de mysql v.8 en este caso mariadb 
+Prod_Id,
+Prod_Descripcion,
+Prod_Propiedades->'$.propiedades.electrico' AS Electrico
+FROM productos
+*/
+/*
+UPDATE productos 
+SET Prod_Propiedades = JSON_REPLACE(Prod_Propiedades,'$.propiedades.electrico','false')
+WHERE Prod_Id = 6990
+*/
+/*
+SELECT Prod_Id, Prod_Descripcion FROM
+productos WHERE JSON_EXTRACT(Prod_Propiedades,
+'$.propiedades.electrico')=FALSE 
+*/
+/*
+UPDATE productos 
+SET Prod_Propiedades = JSON_REMOVE(Prod_Propiedades,'$.propiedades.fallas')
+WHERE Prod_Id=6990
+*/
+/*
+EXPLAIN SELECT 
+pp_pedido_procesado.*,
+pp_pedido.*
+FROM
+	pp_pedido_procesado 
+INNER JOIN pp_pedido 
+ON  pp_pedido_procesado.pedido_procesado_npedido=pp_pedido.pedido_npedido
+WHERE pedido_procesado_status = 1 ORDER BY pedido_procesado_row ASC
+*/
+#Practicas con la base de datos sakila
+/*
+SELECT COUNT(*) AS Comedias
+FROM film
+INNER JOIN film_category ON film_category.film_id = film.film_id
+INNER JOIN category ON category.category_id = film_category.category_id
+WHERE category.category_id = 5;
+*/
+/*
+SELECT actor.actor_id, first_name, last_name, COUNT(film_actor.actor_id) AS Numero_Peliculas
+FROM actor
+INNER JOIN film_actor ON film_actor.actor_id = actor.actor_id
+GROUP BY film_actor.actor_id
+ORDER BY Numero_Peliculas DESC
+LIMIT 1
+*/
+/*
+SELECT actor.actor_id, first_name, last_name
+FROM actor
+INNER JOIN film_actor ON film_actor.actor_id = actor.actor_id
+GROUP BY film_actor.actor_id
+ORDER BY COUNT(*) DESC
+LIMIT 1
+*/
+/*
+SELECT staff.staff_id, first_name, last_name, COUNT(film_actor.actor_id) AS Veces
+FROM staff
+INNER JOIN rental ON rental.staff_id = staff.staff_id
+INNER JOIN inventory ON inventory.film_id = rental.inventory_id
+INNER JOIN film ON film.film_id=inventory.film_id
+INNER JOIN film_actor ON film_actor.film_id=film.film_id
+WHERE film_actor.actor_id=107
+GROUP BY staff.staff_id
+ORDER BY COUNT(film_actor.actor_id) DESC 
+LIMIT 1
+*/
+/*
+SELECT COUNT(film.film_id) AS Numero_Peliculas, customer.customer_id
+FROM film
+INNER JOIN inventory ON inventory.film_id=film.film_id
+INNER JOIN store ON store.store_id=inventory.store_id
+INNER JOIN customer ON customer.store_id=store.store_id
+WHERE film.rating = 'PG-13' AND inventory.store_id=2 
+AND customer.customer_id=(
+SELECT customer_id
+FROM rental
+GROUP BY customer_id
+ORDER BY COUNT(*) DESC
+LIMIT 1 
+)
+*/
+/*
+SELECT COUNT(*) AS Peliculas
+FROM film
+INNER JOIN inventory ON inventory.film_id = film.film_id
+INNER JOIN rental ON inventory.inventory_id = rental.inventory_id
+WHERE film.film_id IN (
+SELECT film.film_id
+FROM film
+INNER JOIN inventory ON inventory.film_id = film.film_id
+WHERE rating='PG-13' AND inventory.store_id = 2
+	) AND rental.customer_id=
+			(
+SELECT customer_id
+FROM rental
+GROUP BY customer_id
+ORDER BY COUNT(*) DESC
+LIMIT 1) AND inventory.store_id=2
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
